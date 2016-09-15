@@ -52,7 +52,9 @@ body {
 
 /* Custom page CSS
 -------------------------------------------------- */
-
+.navbar {
+     border-radius: 0px!important;
+}
 
 /* Not required for template or sticky footer method. */
 
