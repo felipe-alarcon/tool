@@ -20,26 +20,27 @@ $("textarea").keydown(function(e) {
     }
 });
 
-// to handle button enter event
-$('textarea[name=excel_data]').keyup(function(event){
-    if(event.keyCode == 13){
-        $("#generateTable").click();
-    }
-});
-
-function extraSpaceError(){
-    return '<span class="label label-danger label-as-badge">Extra Space<span/>';
+function extraSpaceError(cell){
+  if(extraSpaceCheck(cell)){
+    return '<span class="label label-info">Extra Space</span>';
+  }else{
+    return ' ';
+  }
 }
 
-function capitalizationError(){
-    return '<span class="label label-warning label-as-badge">Capitalization<span/>';
+function capitalizationError(cell){
+  if(capitalizationCheck(cell)){
+      return '<span class="label label-warning">Capitalization</span>';
+  }else{
+    return ' ';
+  }
 }
 
 function characterCount(cell){
   if(cell.length > 0 && cell.length <= 25){
-    return '<span class="label label-success label-as-badge">' + cell.length + '</span>';
+    return '<span class="label label-success">' + cell.length + '</span>';
   }else{
-    return '<span class="label label-danger label-as-badge">' + cell.length + '</span>';
+    return '<span class="label label-danger">' + cell.length + '</span>';
   }
 }
 
@@ -54,7 +55,7 @@ function isLowerCase(value){
 }
 
 function extraSpaceCheck(cell){
-  if(cell.slice(0, 1) === ' ' || cell.slice(-1) === ' '){
+  if(cell.slice(0, 1) === ' ' || cell  .slice(-1) === ' '){
     return true;
   }
 }
@@ -95,20 +96,7 @@ function generateTable() {
         var row = $('<tr />');
         for (var x in cells) {
             if (cells[x].length > 0) {
-                if (extraSpaceCheck(cells[x])) {
-                    row.append('<td>' + cells[x] + characterCount(cells[x]) + extraSpaceError() + '</td>');
-                } else {
-                    if (cells[x].length <= 25) {
-                      if(capitalizationCheck(cells[x])){
-                        row.append('<td>' + cells[x] + characterCount(cells[x]) + capitalizationError() + '</td>');
-                      }else{
-                        row.append('<td>' + cells[x] + characterCount(cells[x]) + '</td>');
-                      }
-                    }
-                    if (cells[x].length > 25) {
-                        row.append('<td>' + cells[x] + characterCount(cells[x]) + '</td>');
-                    }
-                }
+                row.append('<td>' + cells[x] + characterCount(cells[x]) + capitalizationError(cells[x]) + extraSpaceError(cells[x]) + '</td>');
             }
         }
         table.append(row);
