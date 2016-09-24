@@ -27,10 +27,27 @@ $('textarea[name=excel_data]').keyup(function(event){
     }
 });
 
+function extraSpaceError(){
+  return '<span class="label label-danger label-as-badge"> Extra Space <span/>';
+}
+
+function capitalizationError(){
+  return '<span class="label label-warning label-as-badge">Capitalization<span/>'
+}
+
+function characterCount(cell){
+  if(cell.length > 0 && cell.length <= 25){
+    return '<span class="label label-success label-as-badge">' + cell.length + '</span>';
+  }else{
+    return '<span class="label label-danger label-as-badge">' + cell.length + '</span>';
+  }
+}
+
 // checks if a value is numeric
 function isNumeric(val) {
     return Number(parseFloat(val)) == val;
 }
+
 //returns true if a lower case value is found in the first position
 function isLowerCase(value){
   return value.charAt(0) === value.charAt(0).toLowerCase();
@@ -50,7 +67,13 @@ function capitalizationCheck(cell) {
     }
 }
 
-
+function wordRepetition(row){
+  var rowList = row.split('\t').join(' ');
+  var list = rowList.split(' ');
+  var counts = {};
+  list.forEach(function(x) { counts[x] = (counts[x] || 0)+1; });
+  return counts;
+}
 
 function generateTable() {
     // Get values from textarea
@@ -65,24 +88,24 @@ function generateTable() {
 
     for (var y in rows) {
         var cells = rows[y].split("\t");
-        console.log(rows[y]);
+        console.log(wordRepetition(rows[y]));
         var row = $('<tr />');
 
         for (var x in cells) {
-
+            //This means that empty cells won't show up
             if (cells[x].length > 0) {
                 if (cells[x].slice(0, 1) === ' ' || cells[x].slice(-1) === ' ') {
-                    row.append('<td>' + cells[x] + ' ' + '<span class="label label-danger label-as-badge">' + cells[x].length + ' Extra Space <span/>' + '</td>');
+                    row.append('<td>' + cells[x] + characterCount(cells[x]) + extraSpaceError() + '</td>');
                 } else {
                     if (cells[x].length <= 25) {
                       if(capitalizationCheck(cells[x])){
-                        row.append('<td>' + cells[x] + ' ' + '<span class="label label-warning label-as-badge">' + cells[x].length + ' Capitalization <span/>' + '</td>');
+                        row.append('<td>' + cells[x] + characterCount(cells[x]) + capitalizationError() + '</td>');
                       }else{
-                        row.append('<td>' + cells[x] + ' ' + '<span class="label label-success label-as-badge">' + cells[x].length + '<span/>' + '</td>');
+                        row.append('<td>' + cells[x] + characterCount(cells[x]) + '</td>');
                       }
                     }
                     if (cells[x].length > 25) {
-                        row.append('<td>' + cells[x] + ' ' + '<span class="label label-danger label-as-badge">' + cells[x].length + '<span/>' + '</td>');
+                        row.append('<td>' + cells[x] + characterCount(cells[x]) + '</td>');
                     }
                 }
             }
