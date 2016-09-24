@@ -27,16 +27,12 @@ $('textarea[name=excel_data]').keyup(function(event){
     }
 });
 
-function extraSpaceError(cell){
-  if(extraSpaceCheck(cell)){
-      return '<span class="label label-danger label-as-badge">Extra Space<span/>';
-  }
+function extraSpaceError(){
+    return '<span class="label label-danger label-as-badge">Extra Space<span/>';
 }
 
-function capitalizationError(cell){
-  if(capitalizationCheck(cell)){
-      return '<span class="label label-warning label-as-badge">Capitalization<span/>'
-  }
+function capitalizationError(){
+    return '<span class="label label-warning label-as-badge">Capitalization<span/>';
 }
 
 function characterCount(cell){
@@ -58,17 +54,21 @@ function isLowerCase(value){
 }
 
 function extraSpaceCheck(cell){
-  return cells[x].slice(0, 1) === ' ' || cells[x].slice(-1) === ' ';
+  if(cell.slice(0, 1) === ' ' || cell.slice(-1) === ' '){
+    return true;
+  }
 }
 
 //Pass whole cell and check if every word is capitalized
 function capitalizationCheck(cell) {
     var explode = cell.split(' ');
     var cleanEmpty = explode.filter(Boolean);
-
+    console.log(cleanEmpty);
     for(var i = 0; i < cleanEmpty.length; i++){
       if(cleanEmpty[i].length > 1 && !isNumeric(cleanEmpty[i])){
-        return isLowerCase(cleanEmpty[i]);
+        if(isLowerCase(cleanEmpty[i])){
+          return true;
+        }
       }
     }
 }
@@ -94,7 +94,6 @@ function generateTable() {
         //console.log(wordRepetition(rows[y]));
         var row = $('<tr />');
         for (var x in cells) {
-            //This means that empty cells won't show up
             if (cells[x].length > 0) {
                 if (extraSpaceCheck(cells[x])) {
                     row.append('<td>' + cells[x] + characterCount(cells[x]) + extraSpaceError() + '</td>');
