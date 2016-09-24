@@ -27,12 +27,16 @@ $('textarea[name=excel_data]').keyup(function(event){
     }
 });
 
-function extraSpaceError(){
-  return '<span class="label label-danger label-as-badge"> Extra Space <span/>';
+function extraSpaceError(cell){
+  if(extraSpaceCheck(cell)){
+      return '<span class="label label-danger label-as-badge">Extra Space<span/>';
+  }
 }
 
-function capitalizationError(){
-  return '<span class="label label-warning label-as-badge">Capitalization<span/>'
+function capitalizationError(cell){
+  if(capitalizationCheck(cell)){
+      return '<span class="label label-warning label-as-badge">Capitalization<span/>'
+  }
 }
 
 function characterCount(cell){
@@ -53,6 +57,10 @@ function isLowerCase(value){
   return value.charAt(0) === value.charAt(0).toLowerCase();
 }
 
+function extraSpaceCheck(cell){
+  return cells[x].slice(0, 1) === ' ' || cells[x].slice(-1) === ' ';
+}
+
 //Pass whole cell and check if every word is capitalized
 function capitalizationCheck(cell) {
     var explode = cell.split(' ');
@@ -60,9 +68,7 @@ function capitalizationCheck(cell) {
 
     for(var i = 0; i < cleanEmpty.length; i++){
       if(cleanEmpty[i].length > 1 && !isNumeric(cleanEmpty[i])){
-        if(isLowerCase(cleanEmpty[i])){
-          return true;
-        }
+        return isLowerCase(cleanEmpty[i]);
       }
     }
 }
@@ -79,22 +85,18 @@ function generateTable() {
     // Get values from textarea
     var data = $('textarea[name=excel_data]').val();
 
-    // Take all values individually
-    var values = data.split('\t');
-
     var rows = data.split("\n");
 
     var table = $('<table />');
 
     for (var y in rows) {
         var cells = rows[y].split("\t");
-        console.log(wordRepetition(rows[y]));
+        //console.log(wordRepetition(rows[y]));
         var row = $('<tr />');
-
         for (var x in cells) {
             //This means that empty cells won't show up
             if (cells[x].length > 0) {
-                if (cells[x].slice(0, 1) === ' ' || cells[x].slice(-1) === ' ') {
+                if (extraSpaceCheck(cells[x])) {
                     row.append('<td>' + cells[x] + characterCount(cells[x]) + extraSpaceError() + '</td>');
                 } else {
                     if (cells[x].length <= 25) {
@@ -112,7 +114,6 @@ function generateTable() {
         }
         table.append(row);
     }
-
     // Insert into DOM
     $('#excel_table').html(table);
 }
