@@ -20,6 +20,13 @@ $("textarea").keydown(function(e) {
     }
 });
 
+// to handle button enter event
+$('textarea[name=excel_data]').keyup(function(event){
+    if(event.keyCode == 13){
+        $("#generateTable").click();
+    }
+});
+
 // checks if a value is numeric
 function isNumeric(val) {
     return Number(parseFloat(val)) == val;
@@ -58,15 +65,14 @@ function generateTable() {
 
     for (var y in rows) {
         var cells = rows[y].split("\t");
-
+        console.log(rows[y]);
         var row = $('<tr />');
 
         for (var x in cells) {
-          //  console.log(capitalizationCheck(cells[x]) + ' ' + cells[x]);
+
             if (cells[x].length > 0) {
                 if (cells[x].slice(0, 1) === ' ' || cells[x].slice(-1) === ' ') {
                     row.append('<td>' + cells[x] + ' ' + '<span class="label label-danger label-as-badge">' + cells[x].length + ' Extra Space <span/>' + '</td>');
-                    //console.log(cells[x]);
                 } else {
                     if (cells[x].length <= 25) {
                       if(capitalizationCheck(cells[x])){
