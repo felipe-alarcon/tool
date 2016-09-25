@@ -44,9 +44,15 @@ function characterCount(cell){
   }
 }
 
+
 // checks if a value is numeric
-function isNumeric(val) {
-    return Number(parseFloat(val)) == val;
+function hasNumeric(val) {
+    var regex = /[0-9]+/g;
+    if(val.match(regex)){
+      return false;
+    }else{
+      return true;
+    }
 }
 
 //returns true if a lower case value is found in the first position
@@ -55,7 +61,7 @@ function isLowerCase(value){
 }
 
 function extraSpaceCheck(cell){
-  if(cell.slice(0, 1) === ' ' || cell  .slice(-1) === ' '){
+  if(cell.slice(0, 1) === ' ' || cell.slice(-1) === ' '){
     return true;
   }
 }
@@ -64,9 +70,9 @@ function extraSpaceCheck(cell){
 function capitalizationCheck(cell) {
     var explode = cell.split(' ');
     var cleanEmpty = explode.filter(Boolean);
-    console.log(cleanEmpty);
+
     for(var i = 0; i < cleanEmpty.length; i++){
-      if(cleanEmpty[i].length > 1 && !isNumeric(cleanEmpty[i])){
+      if(cleanEmpty[i].length > 1 && hasNumeric(cleanEmpty[i])){
         if(isLowerCase(cleanEmpty[i])){
           return true;
         }
