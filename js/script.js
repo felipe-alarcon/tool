@@ -96,10 +96,23 @@ function generateTable() {
 
     var table = $('<table />');
 
+    var count = 0;
+
     for (var y in rows) {
+
         var cells = rows[y].split("\t");
-        //console.log(wordRepetition(rows[y]));
+        var data = wordRepetition(rows[y]);
         var row = $('<tr />');
+        if(rows[y].length > 0){
+          count++;
+        }
+        for(var key in data){
+          if(data[key] > 1 && key.length > 2){
+            row.append('<td>The word <span style="color:red">' + key + '</span> is being repeated ' + data[key] + ' Times in line ' + count + '</td>');
+          }
+        }
+
+
         for (var x in cells) {
             if (cells[x].length > 0) {
                 row.append('<td>' + cells[x] + characterCount(cells[x]) + capitalizationError(cells[x]) + extraSpaceError(cells[x]) + '</td>');
