@@ -20,6 +20,7 @@ $("textarea").keydown(function(e) {
     }
 });
 
+// this only flags the errors, does not correct
 function extraSpaceError(cell){
   if(extraSpaceCheck(cell)){
     return '<span class="label label-info">Extra Space</span>';
@@ -28,6 +29,7 @@ function extraSpaceError(cell){
   }
 }
 
+// this only flags the errors, does not correct
 function capitalizationError(cell){
   if(capitalizationCheck(cell)){
       return '<span class="label label-warning">Capitalization</span>';
@@ -36,6 +38,7 @@ function capitalizationError(cell){
   }
 }
 
+// this only flags the errors, does not correct
 function characterCount(cell){
   if(cell.length > 0 && cell.length <= 25){
     return '<span class="label label-success">' + cell.length + '</span>';
@@ -80,9 +83,15 @@ function capitalizationCheck(cell) {
     }
 }
 
+function cleanCell(cell){
+  
+  return cell.trim();
+}
+
 function wordRepetition(row){
   var rowList = row.split('\t').join(' ');
   var list = rowList.split(' ');
+  console.log(list)
   var counts = {};
   list.forEach(function(x) { counts[x] = (counts[x] || 0)+1; });
   return counts;
@@ -91,31 +100,27 @@ function wordRepetition(row){
 function generateTable() {
     // Get values from textarea
     var data = $('textarea[name=excel_data]').val();
-
+    
     var rows = data.split("\n");
-
+    
     var table = $('<table />');
 
     var count = 0;
 
     for (var y in rows) {
 
-        var cells = rows[y].split("\t");
-        var data = wordRepetition(rows[y]);
+        var cells = rows[y].split("|");
+        
         var row = $('<tr />');
         if(rows[y].length > 0){
           count++;
         }
-        for(var key in data){
-          if(data[key] > 1 && key.length > 2){
-            row.append('<td>The word <span style="color:red">' + key + '</span> is being repeated ' + data[key] + ' Times in line ' + count + '</td>');
-          }
-        }
 
 
         for (var x in cells) {
-            if (cells[x].length > 0) {
-                row.append('<td>' + cells[x] + characterCount(cells[x]) + capitalizationError(cells[x]) + extraSpaceError(cells[x]) + '</td>');
+            var newCell = cleanCell(cells[x])
+            if (newCell.length > 0) {
+                row.append('<td>' + newCell + characterCount(newCell) + capitalizationError(newCell) + extraSpaceError(newCell) + '</td>');
             }
         }
         table.append(row);
