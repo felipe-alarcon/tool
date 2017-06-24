@@ -85,7 +85,7 @@ function capitalizationCheck(cell) {
 
 function cleanCell(cell){
   
-  return cell.trim();
+	return cell.trim();
 }
 
 function wordRepetition(row){
@@ -112,6 +112,7 @@ function generateTable() {
         var cells = rows[y].split("|");
         
         var row = $('<tr />');
+
         if(rows[y].length > 0){
           count++;
         }
@@ -119,7 +120,7 @@ function generateTable() {
 
         for (var x in cells) {
             var newCell = cleanCell(cells[x])
-            if (newCell.length > 0) {
+            if (newCell.length > 0 && newCell !== 'null') {
                 row.append('<td>' + newCell + characterCount(newCell) + capitalizationError(newCell) + extraSpaceError(newCell) + '</td>');
             }
         }
